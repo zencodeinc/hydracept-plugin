@@ -31,7 +31,7 @@ If init returns `status: interaction_required`, follow the Hydracept activation 
 
 **Hosted MCP (no checkout):** `https://api.hydracept.com/mcp` with `Authorization: Bearer <HYDRACEPT_API_KEY>`. Get a key at https://hydracept.com/start .
 
-**Quick key-only stdio:** `uvx hydracept@0.4.3 mcp serve` with `HYDRACEPT_API_KEY` set (see [MCP Registry manifest](./mcp-registry/server.json)).
+**Quick key-only stdio:** `uvx hydracept@0.4.4 mcp serve` with `HYDRACEPT_API_KEY` set (see [MCP Registry manifest](./mcp-registry/server.json)).
 
 Commands: `/hydracept-init`, `/hydracept-doctor`.
 
@@ -42,7 +42,7 @@ Local CLI fallback (optional): `python -m hydracept agents install --auto`.
 Official registry manifest: [`mcp-registry/server.json`](./mcp-registry/server.json).
 
 - **Registry name (domain namespace):** `com.hydracept/hydracept` — aligned with the PyPI README `mcp-name` line in the `zencodeinc/hydracept` monorepo (owner verifies **hydracept.com** for the `com.hydracept` namespace).
-- **Manifest version `0.4.3`** tracks the published PyPI MCP server, not the Cursor plugin semver (`0.1.8`).
+- **Manifest version `0.4.4`** tracks the published PyPI MCP server, not the Cursor plugin semver (`0.1.8`).
 
 Publishing is manual: validate with `mcp-publisher validate mcp-registry/server.json`, then `cd mcp-registry && mcp-publisher publish` after domain verification and PyPI README ownership are complete. Do not publish the hosted remote until redirect/TLS issues on `https://api.hydracept.com/mcp` are fixed.
 
