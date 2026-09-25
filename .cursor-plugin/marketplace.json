@@ -1,0 +1,17 @@
+{
+  "name": "hydracept",
+  "owner": {
+    "name": "Zencode Consulting Inc.",
+    "email": "support@hydracept.com"
+  },
+  "metadata": {
+    "description": "Official Hydracept Cursor plugin (skills, rules, commands, stdio MCP wiring)."
+  },
+  "plugins": [
+    {
+      "name": "hydracept",
+      "source": ".",
+      "description": "One execution surface for text/reasoning, media, domains, DNS, and other external capabilities, with durable jobs, budgets, receipts, and BYOK."
+    }
+  ]
+}
