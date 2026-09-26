@@ -1,13 +1,13 @@
 ---
 name: hydracept-image
 description: >
-  Generate production game images through Hydracept image.generate.v1 — transparent
-  sprites, icons, variants, and receipted jobs.
+  Generate production images through Hydracept image.generate.v1 — transparent
+  PNGs, icons, sprites, variants, and receipted jobs.
 ---
 
 # Hydracept Image
 
-Production image generation judgment for game assets.
+Production image generation judgment for app, web, and game art (icons, sprites, illustrations, transparent PNGs).
 
 ## Capability
 
@@ -55,7 +55,7 @@ Keep prompts short, product-neutral, and lighting-first. Do not name a provider.
 
 ## Workflow
 
-1. Describe the asset need in game terms, not provider terms
+1. Describe the asset need in product terms (use, size, style), not provider terms
 2. Read `pricingFactors` on `image.generate.v1`. Optional: `hydracept_quote_capability` (`POST /quote`) for a 0.3 `pricing.quote` preview. Do **not** attach a stale `execution.quoteId`.
 3. Submit a job with project context from the workspace. **Omit `execution.quoteId`.** The API seals pricing at admission.
 4. Poll until `succeeded`
