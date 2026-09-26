@@ -1,0 +1,21 @@
+{
+  "name": "hydracept",
+  "version": "0.1.9",
+  "description": "Image, audio, video, 3D, and text generation for coding agents through one remote MCP server, with durable jobs, budgets, and receipts.",
+  "settings": [
+    {
+      "name": "Hydracept API key",
+      "description": "Workspace API key from https://hydracept.com/start.",
+      "envVar": "HYDRACEPT_API_KEY",
+      "sensitive": true
+    }
+  ],
+  "mcpServers": {
+    "hydracept": {
+      "httpUrl": "https://api.hydracept.com/mcp",
+      "headers": {
+        "Authorization": "Bearer ${HYDRACEPT_API_KEY}"
+      }
+    }
+  }
+}

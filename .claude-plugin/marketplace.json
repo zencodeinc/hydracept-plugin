@@ -1,0 +1,18 @@
+{
+  "name": "hydracept",
+  "description": "Official Hydracept plugin marketplace for Claude Code.",
+  "owner": {
+    "name": "Zencode Consulting Inc.",
+    "email": "support@hydracept.com",
+    "url": "https://hydracept.com"
+  },
+  "plugins": [
+    {
+      "name": "hydracept",
+      "source": "./",
+      "description": "Image, audio, video, 3D, and text generation for coding agents through one remote MCP server (https://api.hydracept.com/mcp).",
+      "category": "integrations",
+      "tags": ["mcp", "image-generation", "audio", "video", "3d", "game-assets"]
+    }
+  ]
+}
