@@ -1,0 +1,46 @@
+{
+  "name": "hydracept",
+  "displayName": "Hydracept",
+  "version": "0.1.9",
+  "description": "Image, audio, video, 3D, and text generation for coding agents through one remote MCP server, with durable jobs, budgets, receipts, and BYOK.",
+  "author": {
+    "name": "Zencode Consulting Inc.",
+    "email": "support@hydracept.com",
+    "url": "https://hydracept.com"
+  },
+  "homepage": "https://hydracept.com/plugin",
+  "repository": "https://github.com/zencodeinc/hydracept-plugin",
+  "license": "MIT",
+  "keywords": [
+    "hydracept",
+    "mcp",
+    "image-generation",
+    "audio-generation",
+    "video-generation",
+    "3d-generation",
+    "text-generation",
+    "game-assets",
+    "sprite-sheet",
+    "durable-jobs",
+    "receipts",
+    "byok"
+  ],
+  "userConfig": {
+    "api_key": {
+      "type": "string",
+      "title": "Hydracept API key",
+      "description": "Workspace API key from https://hydracept.com/start. Stored in your OS credential store, never in settings.json.",
+      "required": true,
+      "sensitive": true
+    }
+  },
+  "mcpServers": {
+    "hydracept": {
+      "type": "http",
+      "url": "https://api.hydracept.com/mcp",
+      "headers": {
+        "Authorization": "Bearer ${user_config.api_key}"
+      }
+    }
+  }
+}

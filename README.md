@@ -27,6 +27,86 @@ A Zencode product · © Zencode Consulting Inc.
    pip install -U hydracept
    ```
 
+3. **Claude Code:** add marketplace `zencodeinc/hydracept-plugin` and install `hydracept@hydracept` — see [Install in Claude Code](#install-in-claude-code).
+
+## Install in Claude Code
+
+Hydracept ships a Claude Code plugin marketplace in this repository (`.claude-plugin/marketplace.json`).
+
+```text
+/plugin marketplace add zencodeinc/hydracept-plugin
+/plugin install hydracept@hydracept
+```
+
+Or from your shell:
+
+```bash
+claude plugin marketplace add zencodeinc/hydracept-plugin
+claude plugin install hydracept@hydracept
+```
+
+When the plugin is enabled, Claude Code asks for your **Hydracept API key** (get one at https://hydracept.com/start). The key is stored in your OS credential store, not in `settings.json`, and is sent as `Authorization: Bearer <key>` to the hosted MCP server `https://api.hydracept.com/mcp`. To change it later, run `/plugin configure hydracept@hydracept`.
+
+The plugin adds the Hydracept MCP server plus the Hydracept skills (`/hydracept:hydracept`, `/hydracept:hydracept-image`, and others). To update, run `claude plugin update hydracept@hydracept`.
+
+**MCP server only (no plugin):** with `HYDRACEPT_API_KEY` exported in your shell:
+
+```bash
+claude mcp add --transport http hydracept https://api.hydracept.com/mcp \
+  --header "Authorization: Bearer $HYDRACEPT_API_KEY"
+```
+
+## Install in Claude Desktop
+
+Claude Desktop's `claude_desktop_config.json` starts local (stdio) servers. Use the `hydracept` PyPI package via [`uv`](https://docs.astral.sh/uv/). Open **Settings → Developer → Edit Config** and add:
+
+```json
+{
+  "mcpServers": {
+    "hydracept": {
+      "command": "uvx",
+      "args": ["hydracept@0.4.4", "mcp", "serve"],
+      "env": {
+        "HYDRACEPT_API_KEY": "<your Hydracept API key>"
+      }
+    }
+  }
+}
+```
+
+Restart Claude Desktop. Keep this file private because it holds your key.
+
+**Custom connector (remote):** Hydracept authenticates with an API key, not OAuth. You can add `https://api.hydracept.com/mcp` under **Settings → Connectors → Add custom connector** only if your organization has the beta **Request headers** option. Choose **No sign-in** and add the `authorization` header with the value `Bearer <your key>`. Without that option, use the config above.
+
+## Install in Google Antigravity
+
+Antigravity 2.0, the Antigravity IDE, and the Antigravity CLI (`agy`) all read one MCP config file: `~/.gemini/config/mcp_config.json`. For a single project, use `.agents/mcp_config.json` in the workspace. In the IDE, open **… → MCP Servers → Manage MCP Servers → View raw config** and add:
+
+```json
+{
+  "mcpServers": {
+    "hydracept": {
+      "serverUrl": "https://api.hydracept.com/mcp",
+      "headers": {
+        "Authorization": "Bearer <your Hydracept API key>"
+      }
+    }
+  }
+}
+```
+
+Antigravity requires `serverUrl`; the keys `url` and `httpUrl` don't work there. After saving, refresh **Settings → Customizations → Installed MCP Servers**. If you use a workspace `.agents/mcp_config.json`, add it to `.gitignore` so the key is never committed.
+
+## Install in Gemini CLI
+
+This repository is also a Gemini CLI extension (`gemini-extension.json`):
+
+```bash
+gemini extensions install https://github.com/zencodeinc/hydracept-plugin
+```
+
+The installer asks for your **Hydracept API key** and stores it as a sensitive setting (`HYDRACEPT_API_KEY`). To change it, run `gemini extensions config hydracept`.
+
 ## Authentication
 
 Get an account and key at https://hydracept.com/start. Do **not** paste `HYDRACEPT_API_KEY` into chat, and do not put it in **Plugins → Configure** for project checkouts.
