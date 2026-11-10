@@ -25,9 +25,11 @@ The machine contract is authoritative. `presentation.agentAction=present_and_yie
 
 Do **not** send the user to **Plugins → Configure** to finish checkout init. That key store is not the workspace secret file.
 
-## No-checkout clients only
+## Hosted MCP and checkout stdio
 
-Hosted MCP at `https://api.hydracept.com/mcp` is for ChatGPT and other clients with no project checkout. Coding agents in a repo use stdio.
+The Cursor plugin's default MCP is hosted at `https://api.hydracept.com/mcp`. Marketplace and no-checkout clients (including ChatGPT) use that endpoint and set `HYDRACEPT_API_KEY` in the client's configure store. Do not paste the key into chat.
+
+In a project checkout, this command runs canonical init and binds project MCP to stdio with workspace secrets. Do not copy that workspace key into Plugins -> Configure. Hosted MCP cannot apply or execute local project commands; those need the stdio bind.
 
 ## Safety
 

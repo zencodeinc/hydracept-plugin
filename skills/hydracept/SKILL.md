@@ -84,15 +84,15 @@ with HydraceptWorkspace.open() as hydracept:
 ```
 
 Canonical CLI: `python -m hydracept run image.generate.v1 --input '{"prompt":"..."}'`.
-`python -m hydracept jobs submit` remains expert plumbing. Coding agents bind stdio MCP via `python -m hydracept mcp serve --workspace <abs-root>` (Cursor uses `${workspaceFolder}`).
-4. After init, coding agents use stdio MCP (`python -m hydracept mcp serve --workspace ${workspaceFolder}`) with workspace secrets. If `hydracept_*` tools are **not listed this turn**, skip hosted discovery. Do not copy the workspace key into **Plugins → Configure**. Hosted MCP is for clients with no checkout.
+`python -m hydracept jobs submit` remains expert plumbing. In a project checkout, coding agents can bind stdio MCP via `python -m hydracept mcp serve --workspace <abs-root>` (Cursor uses `${workspaceFolder}`).
+4. After init, coding agents in a project checkout use stdio MCP (`python -m hydracept mcp serve --workspace ${workspaceFolder}`) with workspace secrets. If `hydracept_*` tools are **not listed this turn**, skip hosted discovery. Do not copy the workspace key into **Plugins -> Configure**. The Cursor plugin's default MCP is the hosted endpoint at `https://api.hydracept.com/mcp`; use Plugins -> Configure for `HYDRACEPT_API_KEY` on that path only.
 5. If the user refers to a prior job but does not have its ID, use `hydracept_jobs_find` before asking the human. Use `intent="failed"` for failures and `intent="reusable"` for prior successful artifacts, then `hydracept_job_inspect` on the relevant item.
 6. On HTTP 409 `QUOTE_MISMATCH`, omit `execution.quoteId` / `estimateId` and submit with a **new** `idempotencyKey`. A client poll timeout is not a Hydracept failure — keep polling `GET /v1/jobs/{jobId}` or POST the same key. Same key plus the same payload returns the existing job, including after failed. `409 IdempotencyConflict` is payload mismatch only and includes `jobId`. Follow `nextAction` / `retry.newKeySafe`; do not mint a new key on `TRANSPORT_AMBIGUOUS`.
 7. Sheet & Slice: size by either cell (sheet.normalize.width/height; canvas = cell × columns,rows) or canvas (width/height; cell = canvas ÷ columns,rows) — both given must agree. The resulting canvas must meet the model minimum; slices may be any size. Read sheetSlicing/canvasFloor on GET /v1/capabilities/image.generate.v1 (default 816×816, 16-aligned).
 8. `image.generate.v1` width/height snap up to multiples of 16. Open Graph 1200×630 becomes 1200×640.
 9. `jobs.run(..., download_dir=...)` compares receipt SHA-256 as hex; `sha256:<hex>` is a prefix, not part of the hash.
 10. `audio.sfx.generate.v1` artifacts are Ogg (`audio/ogg`) with a `.ogg` filename, not WAV.
-11. Hosted Hydracept MCP can list tools with no workspace key. Use `HydraceptWorkspace.open()` or stdio MCP after `python -m hydracept init`. Do not put the workspace key in **Plugins → Configure**.
+11. Hosted Hydracept MCP can list tools with no workspace key. For the Cursor plugin's hosted path, set `HYDRACEPT_API_KEY` in Plugins -> Configure. After `python -m hydracept init` in a project checkout, use `HydraceptWorkspace.open()` or stdio MCP, and do not put the workspace key in Plugins -> Configure.
 
 ## Job contract (methods, waits, inputs, outputs)
 
@@ -120,7 +120,7 @@ upgrade CLI → init → find capability → describe → run → poll → artif
 ```
 
 1. **Discover** — `GET /v1/agent-context` (live), MCP `hydracept_capabilities`, or `https://hydracept.com/.well-known/hydracept.json`.
-2. **Authenticate** — run `python -m hydracept init --apply --yes --json`. If it returns `interaction_required`, stop automation. Follow `presentation.agentAction`: `present_and_yield` means invoke `hydracept_interaction_surface` once and stop the turn. Otherwise present `action.url` verbatim and stop. Do **not** start `--wait` or continue diagnostics until the human confirms activation; only then run `afterCompletion.command`. Hosted MCP uses `Authorization: Bearer <HYDRACEPT_API_KEY>` only when there is no checkout.
+2. **Authenticate.** For the Cursor plugin's hosted MCP, set `HYDRACEPT_API_KEY` in Plugins -> Configure (Authorization: Bearer). In a project checkout, run `python -m hydracept init --apply --yes --json` and prefer stdio with workspace secrets. If init returns `interaction_required`, stop automation. Follow `presentation.agentAction`: `present_and_yield` means invoke `hydracept_interaction_surface` once and stop the turn. Otherwise present `action.url` verbatim and stop. Do **not** start `--wait` or continue diagnostics until the human confirms activation; only then run `afterCompletion.command`.
 3. **Inspect capabilities** — MCP `hydracept_capabilities` or `GET /v1/capabilities`. Read `pricing.pricingFactors`. Catalog prices are `pricingContext: catalog_default` and are **not** authoritative for execution.
 4. **Resolve gaps** — If the needed work is not listed, call MCP `resolve_capability` (`POST /v1/capabilities/resolve`). Missing capabilities are a normal outcome. `no_match_requestable` may lead to MCP `request_capability_quote` (non-binding; humans pay).
 5. **Quote (optional)** — MCP `hydracept_quote_capability` (`POST /v1/capabilities/{key}/quote`) for a retail quote (`pricing.quote`). Quotes **do not spend or reserve** wallet funds. **Do not** attach a stale `execution.quoteId`. `POST .../estimate` is the same route.
