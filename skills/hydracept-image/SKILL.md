@@ -1,13 +1,13 @@
 ---
 name: hydracept-image
 description: >
-  Generate production game images through Hydracept image.generate.v1 — transparent
-  sprites, icons, variants, and receipted jobs.
+  Generate images through Hydracept image.generate.v1: transparent
+  PNGs, icons, variants, and receipted jobs.
 ---
 
 # Hydracept Image
 
-Production image generation judgment for game assets.
+Image generation judgment for Hydracept `image.generate.v1` and `image.edit.v1`.
 
 ## Capability
 
@@ -15,14 +15,14 @@ Use `image.generate.v1` through `python -m hydracept run image.generate.v1 --pro
 
 Use `image.generate.v1` for new images. Use `image.edit.v1` to edit an existing PNG in place:
 
-- `sourceImage` — the canvas (provider `images.edit` image[0]), not a style reference
-- `referenceImages` — 0–3 insert graphics (logo, overlay) as later image entries
-- `mask` — optional PNG; alpha 0 is editable. Unmasked pixels are preserved by the provider.
-- `prompt` — what to do in the editable region. Do not prepend generate-from-brief or global style.
+- `sourceImage`: the canvas (provider `images.edit` image[0]), not a style reference
+- `referenceImages`: 0-3 insert graphics (logo, overlay) as later image entries
+- `mask`: optional PNG; alpha 0 is editable. Unmasked pixels are preserved by the provider.
+- `prompt`: what to do in the editable region. Do not prepend generate-from-brief or global style.
 
 ## Generate-only options (`image.generate.v1`)
 
-- Transparent PNG sprites/icons: `requestTransparentOutput: true`. Default is native alpha when the catalog model supports it (gpt-image-2).
+- Transparent PNG sprites/icons: `requestTransparentOutput: true`. Default is native alpha when the catalog model supports it.
 - Advanced chroma-key matte: `transparencyMethod: "matte-v9"` with optional `keyColor` and `transparentRegions`. Required for models that have no native transparent background.
 - Multiple takes: `variantCount` between 2 and 4
 - Width/height snap up to multiples of 16. Open Graph: **1200×640** (not 1200×630)
@@ -55,7 +55,7 @@ Keep prompts short, product-neutral, and lighting-first. Do not name a provider.
 
 ## Workflow
 
-1. Describe the asset need in game terms, not provider terms
+1. Describe the asset need in product terms, not provider terms
 2. Read `pricingFactors` on `image.generate.v1`. Optional: `hydracept_quote_capability` (`POST /quote`) for a 0.3 `pricing.quote` preview. Do **not** attach a stale `execution.quoteId`.
 3. Submit a job with project context from the workspace. **Omit `execution.quoteId`.** The API seals pricing at admission.
 4. Poll until `succeeded`

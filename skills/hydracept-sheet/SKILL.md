@@ -11,15 +11,15 @@ Cohesive sprite, icon, glyph, and VFX families via Sheet & Slice.
 
 ## Capability
 
-Use `image.generate.v1` with sheet options — not a separate fictional capability.
+Use `image.generate.v1` with sheet options, not a separate fictional capability.
 
 ## Sizing (required)
 
-Size the sheet by **either** axis — you do not need both:
+Size the sheet by **either** axis. You do not need both:
 
-- **Cell size** — `sheet.normalize.width/height`. The canvas is then
+- **Cell size:** `sheet.normalize.width/height`. The canvas is then
   `cell × columns` by `cell × rows`.
-- **Canvas size** — `width`/`height`. Each cell is then
+- **Canvas size:** `width`/`height`. Each cell is then
   `width ÷ columns` by `height ÷ rows`.
 
 If you give both they must agree (`canvas = cell × columns, rows`), or the request is
@@ -35,7 +35,7 @@ The **resulting canvas** must meet the model's minimum canvas. This is data-driv
 
 Examples on the default model: 2×2 with `normalize 408×408` → canvas 816×816; 2×2 with
 `width/height 1024` → cells 512×512; 4×4 with `width/height 1024` → cells 256×256 (and
-smaller after trim) — all legal.
+smaller after trim). All legal.
 
 ## Sheet options
 

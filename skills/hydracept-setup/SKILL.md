@@ -11,7 +11,7 @@ CLI-first bootstrap for Hydracept in a coding-agent checkout.
 
 ## Flow
 
-If the user already asked for a capability, prefer `python -m hydracept run <key> --prompt "..."` — it composes `init` automatically. Do not run a separate setup ceremony first unless `run` returns `interaction_required`.
+If the user already asked for a capability, prefer `python -m hydracept run <key> --prompt "..."`. It composes `init` automatically. Do not run a separate setup ceremony first unless `run` returns `interaction_required`.
 
 1. Check whether the Hydracept CLI is installed: `python -m hydracept --help`
 2. If missing, explain the install path and ask for approval before running any install command.
@@ -23,9 +23,9 @@ If the user already asked for a capability, prefer `python -m hydracept run <key
    - Otherwise present `action.url` **verbatim** and stop. Do not construct, shorten, normalize, replace, or guess the URL.
    - If the human uses multiple GitHub or Google accounts, tell them to choose the intended account on the connect page.
    - Only after the human confirms completion, run the exact `afterCompletion.command` returned by init (normally `python -m hydracept init --apply --yes --json --wait`).
-6. When status is `ready`, read `mcp`. `reloadRequired` is true only when MCP registration files changed — not when `secrets.json` appeared. Stdio uses `.hydracept/secrets.json` on every tool call.
+6. When status is `ready`, read `mcp`. `reloadRequired` is true only when MCP registration files changed, not when `secrets.json` appeared. Stdio uses `.hydracept/secrets.json` on every tool call.
 7. Unattended / CI: set `HYDRACEPT_API_KEY` out of band and use `init --apply --yes --json` or `--ci`.
-8. If `hydracept_*` MCP tools are missing, do not retry hosted discovery — use `python -m hydracept mcp serve --workspace ${workspaceFolder}` or `jobs submit`. Offer `/hydracept-smoke` only when asked.
+8. If `hydracept_*` MCP tools are missing, do not retry hosted discovery. Use `python -m hydracept mcp serve --workspace ${workspaceFolder}` or `jobs submit`. Offer `/hydracept-smoke` only when asked.
 9. For project surfaces: in the project repo, use stdio MCP `hydracept_project_up_install` or `python -m hydracept project up --install`. Hosted MCP cannot apply or execute local argv.
 
 Do **not** finish setup by copying the workspace key into **Plugins → Configure**.
@@ -35,4 +35,4 @@ Do **not** finish setup by copying the workspace key into **Plugins → Configur
 - Prefer CLI help, `doctor --json`, `agent-status`, live `GET /v1/agent-context`, and public docs over inspecting Hydracept implementation source.
 - Never solicit credentials in conversation.
 - Never echo secrets from terminal output into chat.
-- Do not inspect provider credential values in `.env` files — let `init` handle discovery.
+- Do not inspect provider credential values in `.env` files. Let `init` handle discovery.
