@@ -1,7 +1,7 @@
 ---
 name: hydracept
 description: >
-  Use Hydracept as an execution control plane for software and agents — stable
+  Use Hydracept as an execution control plane for software and agents: stable
   capabilities, provider portability, durable jobs, budgets, receipts, and BYOK
   across text, media, domains, DNS, and other external work.
 ---
@@ -46,7 +46,7 @@ These are usage shapes, not product tiers. Do not treat later shapes as prerequi
 
 | Shape | Meaning | Required for one image/sound/model? |
 | --- | --- | --- |
-| Opportunistic invocation | Run one capability and return the result | No — this is the default |
+| Opportunistic invocation | Run one capability and return the result | No: this is the default |
 | Repeatable project capability | Workspace-bound reuse | No |
 | Application / runtime integration | SDK embedding, CI, consumer-check | No |
 | Production workflow | Pinning, automation, policy | No |
@@ -69,8 +69,8 @@ Never ask the user to paste a provider API key when `execution.managedAvailable`
 
 ## Operating path (do this, not the undocumented workaround)
 
-1. Check `python -m hydracept doctor --json`. If the CLI is missing outside this repo, use `pip install -U hydracept` — do not paste keys. Prefer the latest published CLI and rely on versioned machine contracts instead of pinning agent instructions to a historical patch release.
-2. Discover live: `GET /v1/capabilities` or `python -m hydracept agent-context` — **never** treat `.hydracept/agent-context.json` as the catalog (it goes stale).
+1. Check `python -m hydracept doctor --json`. If the CLI is missing outside this repo, use `pip install -U hydracept`. Do not paste keys. Prefer the latest published CLI and rely on versioned machine contracts instead of pinning agent instructions to a historical patch release.
+2. Discover live: `GET /v1/capabilities` or `python -m hydracept agent-context`. **Never** treat `.hydracept/agent-context.json` as the catalog (it goes stale).
 3. Run a capability through the workspace:
 
 ```python
@@ -87,8 +87,8 @@ Canonical CLI: `python -m hydracept run image.generate.v1 --input '{"prompt":"..
 `python -m hydracept jobs submit` remains expert plumbing. In a project checkout, coding agents can bind stdio MCP via `python -m hydracept mcp serve --workspace <abs-root>` (Cursor uses `${workspaceFolder}`).
 4. After init, coding agents in a project checkout use stdio MCP (`python -m hydracept mcp serve --workspace ${workspaceFolder}`) with workspace secrets. If `hydracept_*` tools are **not listed this turn**, skip hosted discovery. Do not copy the workspace key into **Plugins -> Configure**. The Cursor plugin's default MCP is the hosted endpoint at `https://api.hydracept.com/mcp`; use Plugins -> Configure for `HYDRACEPT_API_KEY` on that path only.
 5. If the user refers to a prior job but does not have its ID, use `hydracept_jobs_find` before asking the human. Use `intent="failed"` for failures and `intent="reusable"` for prior successful artifacts, then `hydracept_job_inspect` on the relevant item.
-6. On HTTP 409 `QUOTE_MISMATCH`, omit `execution.quoteId` / `estimateId` and submit with a **new** `idempotencyKey`. A client poll timeout is not a Hydracept failure — keep polling `GET /v1/jobs/{jobId}` or POST the same key. Same key plus the same payload returns the existing job, including after failed. `409 IdempotencyConflict` is payload mismatch only and includes `jobId`. Follow `nextAction` / `retry.newKeySafe`; do not mint a new key on `TRANSPORT_AMBIGUOUS`.
-7. Sheet & Slice: size by either cell (sheet.normalize.width/height; canvas = cell × columns,rows) or canvas (width/height; cell = canvas ÷ columns,rows) — both given must agree. The resulting canvas must meet the model minimum; slices may be any size. Read sheetSlicing/canvasFloor on GET /v1/capabilities/image.generate.v1 (default 816×816, 16-aligned).
+6. On HTTP 409 `QUOTE_MISMATCH`, omit `execution.quoteId` / `estimateId` and submit with a **new** `idempotencyKey`. A client poll timeout is not a Hydracept failure. Keep polling `GET /v1/jobs/{jobId}` or POST the same key. Same key plus the same payload returns the existing job, including after failed. `409 IdempotencyConflict` is payload mismatch only and includes `jobId`. Follow `nextAction` / `retry.newKeySafe`; do not mint a new key on `TRANSPORT_AMBIGUOUS`.
+7. Sheet & Slice: size by either cell (sheet.normalize.width/height; canvas = cell × columns,rows) or canvas (width/height; cell = canvas ÷ columns,rows). Both given must agree. The resulting canvas must meet the model minimum; slices may be any size. Read sheetSlicing/canvasFloor on GET /v1/capabilities/image.generate.v1 (default 816×816, 16-aligned).
 8. `image.generate.v1` width/height snap up to multiples of 16. Open Graph 1200×630 becomes 1200×640.
 9. `jobs.run(..., download_dir=...)` compares receipt SHA-256 as hex; `sha256:<hex>` is a prefix, not part of the hash.
 10. `audio.sfx.generate.v1` artifacts are Ogg (`audio/ogg`) with a `.ogg` filename, not WAV.
@@ -103,12 +103,12 @@ Live machine-readable copy: `GET /v1/agent-context?profile=integration` → `pyt
 | nextAction | Meaning |
 | --- | --- |
 | `poll` | Call `hydracept_job_status` / `GET /v1/jobs/{jobId}` again after 4s |
-| `download_artifacts` | Succeeded — `hydracept_download_artifact(job_id)` uses `primaryArtifactId` |
+| `download_artifacts` | Succeeded: `hydracept_download_artifact(job_id)` uses `primaryArtifactId` |
 | `present_approval` | Stop. Show the approval URL or quote to the human |
 | `inspect_error` | Stop. Read `job.error` and `job.error.recovery`. Do not retry a sealed route that is not routable. |
 | `stop` | Failed or canceled. Read `job.error.recovery` before any resubmit. |
 
-**Python (scripts):** `HydraceptWorkspace.open().run(...)` or `HydraceptClient.from_workspace().run_capability_job(...)`. MCP tools must not block — repeat `hydracept_job_status` until `nextAction != poll`, then `hydracept_download_artifact(job_id)` (uses `primaryArtifactId`; `ARTIFACT_SELECTION_REQUIRED` when peers must be chosen).
+**Python (scripts):** `HydraceptWorkspace.open().run(...)` or `HydraceptClient.from_workspace().run_capability_job(...)`. MCP tools must not block. Repeat `hydracept_job_status` until `nextAction != poll`, then `hydracept_download_artifact(job_id)` (uses `primaryArtifactId`; `ARTIFACT_SELECTION_REQUIRED` when peers must be chosen).
 
 **History:** `GET /v1/projects/{projectId}/jobs` is prompt-free and supports `status`, `capabilityKey`, `outcome=failed|reusable`, and `selected`. `hydracept_jobs_find` is the agent convenience wrapper. `hydracept_job_inspect` intentionally reads one full job plus its receipt summary and returns `requestSnapshot`, error/diagnostics, and a reuse candidate.
 
@@ -119,20 +119,20 @@ upgrade CLI → init → find capability → describe → run → poll → artif
                                       ↘ later: find prior job → inspect → retry/reuse
 ```
 
-1. **Discover** — `GET /v1/agent-context` (live), MCP `hydracept_capabilities`, or `https://hydracept.com/.well-known/hydracept.json`.
+1. **Discover:** `GET /v1/agent-context` (live), MCP `hydracept_capabilities`, or `https://hydracept.com/.well-known/hydracept.json`.
 2. **Authenticate.** For the Cursor plugin's hosted MCP, set `HYDRACEPT_API_KEY` in Plugins -> Configure (Authorization: Bearer). In a project checkout, run `python -m hydracept init --apply --yes --json` and prefer stdio with workspace secrets. If init returns `interaction_required`, stop automation. Follow `presentation.agentAction`: `present_and_yield` means invoke `hydracept_interaction_surface` once and stop the turn. Otherwise present `action.url` verbatim and stop. Do **not** start `--wait` or continue diagnostics until the human confirms activation; only then run `afterCompletion.command`.
-3. **Inspect capabilities** — MCP `hydracept_capabilities` or `GET /v1/capabilities`. Read `pricing.pricingFactors`. Catalog prices are `pricingContext: catalog_default` and are **not** authoritative for execution.
-4. **Resolve gaps** — If the needed work is not listed, call MCP `resolve_capability` (`POST /v1/capabilities/resolve`). Missing capabilities are a normal outcome. `no_match_requestable` may lead to MCP `request_capability_quote` (non-binding; humans pay).
-5. **Quote (optional)** — MCP `hydracept_quote_capability` (`POST /v1/capabilities/{key}/quote`) for a retail quote (`pricing.quote`). Quotes **do not spend or reserve** wallet funds. **Do not** attach a stale `execution.quoteId`. `POST .../estimate` is the same route.
-6. **Run** — `python -m hydracept run` or MCP `hydracept_run`. **Omit `execution.quoteId`.** The API seals pricing at admission. `hydracept_submit_job` remains expert plumbing.
-7. **Domain / DNS** — `hydracept_invoke` for read-only keys (`domain.search.v1`, `domain.list.v1`, DNS list). Filter `domain.list.v1` with `domain` or `nameContains` (not a raw query body) and read `typedOutput`. `hydracept_submit_job` for `domain.register.v1` / transfers (human price approval). `dns.record.create.v1` upserts an existing ALIAS/conflict; otherwise list records then `dns.record.update.v1` with `recordId`.
-8. **Pin (research)** — MCP `hydracept_pinned_run` / `POST /v1/inference/pinned` when the user needs an exact provider/model/API pin. One logical model execution; Flex-capacity 429s retry inside the admission deadline. No Flex→Standard fallback.
-9. **Poll** — MCP `hydracept_job_status` or `python -m hydracept jobs submit … --watch` (line-flushed).
-10. **Recover context** — if the ID is no longer in the conversation, call `hydracept_jobs_find` (`failed`, `reusable`, or `recent`) instead of asking the human for it. The list is intentionally prompt-free.
-11. **Inspect one prior job** — `hydracept_job_inspect(job_id)`. For failure, read `error.code`. For retry, copy `requestSnapshot` input and use a new idempotency key. For reuse, prefer explicit `selectedArtifactId`; a nominated fallback is not the same as a human selection.
-12. **Retrieve artifact** — MCP `hydracept_download_artifact(job_id, out="artifacts/result.png")` (stdio; `output_path` also works) or job artifact URLs (hosted).
-13. **Inspect receipt** — MCP `hydracept_get_receipt` (jobs), `hydracept_pinned_get` (pinned), or `python -m hydracept jobs receipt <jobId>`.
-14. **Verify provenance or PNG alpha** — use the lockfile/manifest verification tools for provenance. For a downloaded PNG, use `python -m hydracept verify <path.png> --json`; never infer alpha correctness from a rendered preview.
+3. **Inspect capabilities:** MCP `hydracept_capabilities` or `GET /v1/capabilities`. Read `pricing.pricingFactors`. Catalog prices are `pricingContext: catalog_default` and are **not** authoritative for execution.
+4. **Resolve gaps:** If the needed work is not listed, call MCP `resolve_capability` (`POST /v1/capabilities/resolve`). Missing capabilities are a normal outcome. `no_match_requestable` may lead to MCP `request_capability_quote` (non-binding; humans pay).
+5. **Quote (optional):** MCP `hydracept_quote_capability` (`POST /v1/capabilities/{key}/quote`) for a retail quote (`pricing.quote`). Quotes **do not spend or reserve** wallet funds. **Do not** attach a stale `execution.quoteId`. `POST .../estimate` is the same route.
+6. **Run:** `python -m hydracept run` or MCP `hydracept_run`. **Omit `execution.quoteId`.** The API seals pricing at admission. `hydracept_submit_job` remains expert plumbing.
+7. **Domain / DNS:** `hydracept_invoke` for read-only keys (`domain.search.v1`, `domain.list.v1`, DNS list). Filter `domain.list.v1` with `domain` or `nameContains` (not a raw query body) and read `typedOutput`. `hydracept_submit_job` for `domain.register.v1` / transfers (human price approval). `dns.record.create.v1` upserts an existing ALIAS/conflict; otherwise list records then `dns.record.update.v1` with `recordId`.
+8. **Pin (research):** MCP `hydracept_pinned_run` / `POST /v1/inference/pinned` when the user needs an exact provider/model/API pin. One logical model execution; Flex-capacity 429s retry inside the admission deadline. No Flex→Standard fallback.
+9. **Poll:** MCP `hydracept_job_status` or `python -m hydracept jobs submit … --watch` (line-flushed).
+10. **Recover context:** if the ID is no longer in the conversation, call `hydracept_jobs_find` (`failed`, `reusable`, or `recent`) instead of asking the human for it. The list is intentionally prompt-free.
+11. **Inspect one prior job:** `hydracept_job_inspect(job_id)`. For failure, read `error.code`. For retry, copy `requestSnapshot` input and use a new idempotency key. For reuse, prefer explicit `selectedArtifactId`; a nominated fallback is not the same as a human selection.
+12. **Retrieve artifact:** MCP `hydracept_download_artifact(job_id, out="artifacts/result.png")` (stdio; `output_path` also works) or job artifact URLs (hosted).
+13. **Inspect receipt:** MCP `hydracept_get_receipt` (jobs), `hydracept_pinned_get` (pinned), or `python -m hydracept jobs receipt <jobId>`.
+14. **Verify provenance or PNG alpha:** use the lockfile/manifest verification tools for provenance. For a downloaded PNG, use `python -m hydracept verify <path.png> --json`; never infer alpha correctness from a rendered preview.
 
 ## IDE-native human interactions
 
@@ -159,7 +159,7 @@ When stdio MCP exposes `hydracept_interaction_surface`, prefer it whenever Hydra
 - Re-running a failed job uses a new idempotency key. Do not mutate or replay the old failed identity.
 - Reuse is not review or promotion. Do not wire Studio favorites, Prompt Memory, or review state into the public history contract.
 - Pinned research execution remains separate and by-id; do not fake a pinned history surface through project jobs.
-- Prefer durable jobs for text work that can wait — eligible models use deferred processing at 50% of standard token rates (`features.deferredProcessing`). Pins stay standard unless `processing: "deferred"`.
+- Prefer durable jobs for text work that can wait. Eligible models use deferred processing at 50% of standard token rates (`features.deferredProcessing`). Pins stay standard unless `processing: "deferred"`.
 - Before adding intercept infrastructure (media processing, model execution, converters), resolve Hydracept capabilities first.
 - Do not treat catalog prices as the customer's price; use `/quote` in the account billing currency.
 - Do not expect `/quote` to hold wallet funds.
@@ -171,11 +171,11 @@ When stdio MCP exposes `hydracept_interaction_surface`, prefer it whenever Hydra
 
 ## Specialized skills
 
-- `hydracept-setup` — first-time workspace bootstrap
-- `hydracept-inspect` — find failed/reusable jobs, diagnose one, and retry/reuse without asking for a pasted ID
-- `hydracept-image` — transparent PNGs and icon variants
-- `hydracept-sheet` — Sheet & Slice sprite and icon families
-- `hydracept-smoke` — explicit paid verification only
+- `hydracept-setup`: first-time workspace bootstrap
+- `hydracept-inspect`: find failed/reusable jobs, diagnose one, and retry/reuse without asking for a pasted ID
+- `hydracept-image`: transparent PNGs and icon variants
+- `hydracept-sheet`: Sheet & Slice sprite and icon families
+- `hydracept-smoke`: explicit paid verification only
 
 ## Workspace status
 

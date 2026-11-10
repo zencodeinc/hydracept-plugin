@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- Docs: correct the 0.1.10 changelog, README, image skill, and MCP path copy for Cursor Marketplace review. The plugin is a single-plugin repo, so `.cursor-plugin/marketplace.json` is omitted. The plugin MCP is hosted at `https://api.hydracept.com/mcp`. The image skill uses general wording, not game-only wording. README lists all six skills and the API-key rule.
+- Docs: correct the 0.1.10 changelog, README, image skill, and MCP path copy for Cursor Marketplace review. The plugin is a single-plugin repo, so `.cursor-plugin/marketplace.json` is omitted. The plugin MCP is hosted at `https://api.hydracept.com/mcp`. The image skill uses general wording, not game-only wording. README lists all six skills and the API-key rule. Replace remaining em dashes in skills and commands.
 
 ## 0.1.10
 
